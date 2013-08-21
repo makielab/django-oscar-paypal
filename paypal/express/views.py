@@ -137,6 +137,8 @@ class SuccessResponseView(PaymentDetailsView):
         try:
             self.basket = Basket.objects.get(id=kwargs['basket_id'],
                                              status=Basket.FROZEN)
+            Applicator().apply(request, self.basket)
+            request.basket = self.basket
         except Basket.DoesNotExist:
             messages.error(
                 self.request,
@@ -174,6 +176,8 @@ class SuccessResponseView(PaymentDetailsView):
         try:
             basket = Basket.objects.get(id=kwargs['basket_id'],
                                         status=Basket.FROZEN)
+            Applicator().apply(request, basket)
+            request.basket = basket
         except Basket.DoesNotExist:
             messages.error(
                 self.request,
@@ -365,3 +369,4 @@ class ShippingOptionsView(View):
         repo = Repository()
         return repo.get_shipping_methods(user, basket,
                                          shipping_addr=shipping_address)
+

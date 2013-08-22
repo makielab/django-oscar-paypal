@@ -17,6 +17,7 @@ from oscar.apps.payment.exceptions import PaymentError, UnableToTakePayment
 from oscar.apps.payment.models import SourceType, Source
 from oscar.core.loading import get_class
 from oscar.apps.shipping.methods import FixedPrice
+from oscar.apps.offer.utils import Applicator
 
 from paypal.express.facade import get_paypal_url, fetch_transaction_details, confirm_transaction
 from paypal.exceptions import PayPalError

@@ -255,7 +255,7 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
         params['SHIPTONAME'] = user_address.name()
         params['SHIPTOSTREET'] = user_address.line1
         params['SHIPTOSTREET2'] = user_address.line2
-        params['SHIPTOCITY'] = user_address.line4
+        params['SHIPTOCITY'] = user_address.city
         params['SHIPTOSTATE'] = user_address.state
         params['SHIPTOZIP'] = user_address.postcode
         params['SHIPTOCOUNTRYCODE'] = user_address.country.iso_3166_1_a2
@@ -270,7 +270,7 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
         params['SHIPTONAME'] = shipping_address.name()
         params['SHIPTOSTREET'] = shipping_address.line1
         params['SHIPTOSTREET2'] = shipping_address.line2
-        params['SHIPTOCITY'] = shipping_address.line4
+        params['SHIPTOCITY'] = shipping_address.city
         params['SHIPTOSTATE'] = shipping_address.state
         params['SHIPTOZIP'] = shipping_address.postcode
         params['SHIPTOCOUNTRYCODE'] = shipping_address.country.iso_3166_1_a2

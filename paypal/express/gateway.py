@@ -12,6 +12,76 @@ from paypal import gateway
 from paypal import exceptions
 
 
+
+US_ABBREVIATIONS = {
+    'Alabama': 'AL',
+    'Alaska': 'AK',
+    'Arizona': 'AZ',
+    'Arkansas': 'AR',
+    'California': 'CA',
+    'Colorado': 'CO',
+    'Connecticut': 'CT',
+    'Delaware': 'DE',
+    'Florida': 'FL',
+    'Georgia': 'GA',
+    'Hawaii': 'HI',
+    'Idaho': 'ID',
+    'Illinois': 'IL',
+    'Indiana': 'IN',
+    'Iowa': 'IA',
+    'Kansas': 'KS',
+    'Kentucky': 'KY',
+    'Louisiana': 'LA',
+    'Maine': 'ME',
+    'Maryland': 'MD',
+    'Massachusetts': 'MA',
+    'Michigan': 'MI',
+    'Minnesota': 'MN',
+    'Mississippi': 'MS',
+    'Missouri': 'MO',
+    'Montana': 'MT',
+    'Nebraska': 'NE',
+    'Nevada': 'NV',
+    'New Hampshire': 'NH',
+    'New Jersey': 'NJ',
+    'New Mexico': 'NM',
+    'New York': 'NY',
+    'North Carolina': 'NC',
+    'North Dakota': 'ND',
+    'Ohio': 'OH',
+    'Oklahoma': 'OK',
+    'Oregon': 'OR',
+    'Pennsylvania': 'PA',
+    'Rhode Island': 'RI',
+    'South Carolina': 'SC',
+    'South Dakota': 'SD',
+    'Tennessee': 'TN',
+    'Texas': 'TX',
+    'Utah': 'UT',
+    'Vermont': 'VT',
+    'Virginia': 'VA',
+    'Washington': 'WA',
+    'West Virginia': 'WV',
+    'Wisconsin': 'WI',
+    'Wyoming': 'WY',
+    'American Samoa': 'AS',
+    'District of Columbia': 'DC',
+    'Federated States of Micronesia': 'FM',
+    'Guam': 'GU',
+    'Marshall Islands': 'MH',
+    'Northern Mariana Islands': 'MP',
+    'Palau': 'PW',
+    'Puerto Rico': 'PR',
+    'Virgin Islands': 'VI',
+    'Armed Forces Africa': 'AE',
+    'Armed Forces Americas': 'AA',
+    'Armed Forces Canada': 'AE',
+    'Armed Forces Europe': 'AE',
+    'Armed Forces Middle East': 'AE',
+    'Armed Forces Pacific': 'AP'
+}
+
+
 # PayPal methods
 SET_EXPRESS_CHECKOUT = 'SetExpressCheckout'
 GET_EXPRESS_CHECKOUT = 'GetExpressCheckoutDetails'
@@ -256,7 +326,7 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
         params['SHIPTOSTREET'] = user_address.line1
         params['SHIPTOSTREET2'] = user_address.line2
         params['SHIPTOCITY'] = user_address.city
-        params['SHIPTOSTATE'] = user_address.state
+        params['SHIPTOSTATE'] = US_ABBREVIATIONS.get(user_address.state.title(), user_address.state)
         params['SHIPTOZIP'] = user_address.postcode
         params['SHIPTOCOUNTRYCODE'] = user_address.country.iso_3166_1_a2
 
@@ -271,7 +341,7 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
         params['SHIPTOSTREET'] = shipping_address.line1
         params['SHIPTOSTREET2'] = shipping_address.line2
         params['SHIPTOCITY'] = shipping_address.city
-        params['SHIPTOSTATE'] = shipping_address.state
+        params['SHIPTOSTATE'] = US_ABBREVIATIONS.get(shipping_address.state.title(), shipping_address.state)
         params['SHIPTOZIP'] = shipping_address.postcode
         params['SHIPTOCOUNTRYCODE'] = shipping_address.country.iso_3166_1_a2
     elif no_shipping:

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext as _
 from django.template.defaultfilters import truncatewords
-from django.utils.html import strip_tags
+from django.utils.html import strip_tags, strip_entities
 
 from paypal.express import models
 from paypal import gateway
@@ -214,7 +214,7 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
                                                          product.upc else '')
         desc = ''
         if product.description:
-            desc = truncatewords(strip_tags(product.description), 12)
+            desc = truncatewords(strip_entities(strip_tags(product.description)), 12)
         params['L_PAYMENTREQUEST_0_DESC%d' % index] = desc
         # Note, we don't include discounts here - they are handled as separate
         # lines - see below

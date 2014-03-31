@@ -29,6 +29,7 @@ Repository = get_class('shipping.repository', 'Repository')
 
 
 class RedirectView(CheckoutSessionMixin, RedirectView):
+
     """
     Initiate the transaction with Paypal and redirect the user
     to PayPal's Express Checkout to perform the transaction.
@@ -175,10 +176,10 @@ class SuccessResponseView(PaymentDetailsView):
 
         # Lookup the frozen basket that this txn corresponds to
         try:
-            basket = Basket.objects.get(id=kwargs['basket_id'],
-                                        status=Basket.FROZEN)
-            Applicator().apply(request, basket)
-            request.basket = basket
+            self.basket = Basket.objects.get(id=kwargs['basket_id'],
+                                             status=Basket.FROZEN)
+            Applicator().apply(request, self.basket)
+            request.basket = self.basket
         except Basket.DoesNotExist:
             messages.error(
                 self.request,
@@ -186,7 +187,7 @@ class SuccessResponseView(PaymentDetailsView):
                   "PayPal transaction"))
             return HttpResponseRedirect(reverse('basket:summary'))
 
-        return self.submit(basket, order_kwargs=order_kwargs)
+        return self.submit(self.basket, order_kwargs=order_kwargs)
 
     def fetch_paypal_data(self, payer_id, token):
         self.payer_id = payer_id
@@ -370,4 +371,3 @@ class ShippingOptionsView(View):
         repo = Repository()
         return repo.get_shipping_methods(user, basket,
                                          shipping_addr=shipping_address)
-

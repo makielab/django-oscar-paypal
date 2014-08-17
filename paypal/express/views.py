@@ -303,17 +303,6 @@ class SuccessResponseView(PaymentDetailsView):
             country=Country.objects.get(iso_3166_1_a2=self.txn.value('PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE'))
         )
 
-    def get_shipping_method(self, basket=None):
-        """
-        Return the shipping method used
-        """
-        charge = D(self.txn.value('PAYMENTREQUEST_0_SHIPPINGAMT'))
-        method = FixedPrice(charge)
-        basket = basket if basket else self.request.basket
-        method.set_basket(basket)
-        method.name = self.txn.value('SHIPPINGOPTIONNAME')
-        return method
-
 
 class ShippingOptionsView(View):
 

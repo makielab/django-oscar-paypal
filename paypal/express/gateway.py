@@ -387,6 +387,9 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
     params['PAYMENTREQUEST_0_AMT'] = _format_currency(
         params['PAYMENTREQUEST_0_AMT'])
 
+    if getattr(settings, 'PAYPAL_NO_SHIPPING', False):
+        params['NOSHIPPING'] = 1
+
     txn = _fetch_response(SET_EXPRESS_CHECKOUT, params)
 
     # Construct return URL

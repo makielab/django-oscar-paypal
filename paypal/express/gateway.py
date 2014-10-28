@@ -13,7 +13,6 @@ from paypal import gateway
 from paypal import exceptions
 
 
-
 US_ABBREVIATIONS = {
     'Alabama': 'AL',
     'Alaska': 'AK',
@@ -193,8 +192,8 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
         raise exceptions.PayPalError(
             'PayPal can only be used for orders up to 10000 USD')
 
-    if amount <= 0:
-        raise exceptions.PayPalError('Zero value basket is not allowed')
+    # if amount <= 0:
+    #    raise exceptions.PayPalError('Zero value basket is not allowed')
 
     # PAYMENTREQUEST_0_AMT should include tax, shipping and handling
     params = {
@@ -354,24 +353,35 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
         params['ALLOWNOTE'] = 1
 
     # Shipping charges
-    params['PAYMENTREQUEST_0_SHIPPINGAMT'] = _format_currency(D('0.00'))
-    max_charge = D('0.00')
-    for index, method in enumerate(shipping_methods):
-        is_default = index == 0
-        params['L_SHIPPINGOPTIONISDEFAULT%d' % index] = 'true' if is_default else 'false'
-        charge = method.basket_charge_incl_tax()
-        if charge > max_charge:
-            max_charge = charge
-        if is_default:
-            params['PAYMENTREQUEST_0_SHIPPINGAMT'] = _format_currency(charge)
-            params['PAYMENTREQUEST_0_AMT'] += charge
-        params['L_SHIPPINGOPTIONNAME%d' % index] = unicode(method.name)
-        params['L_SHIPPINGOPTIONAMOUNT%d' % index] = _format_currency(charge)
+    #params['PAYMENTREQUEST_0_SHIPPINGAMT'] = _format_currency(D('0.00'))
+    # max_charge = D('0.00')
+    # for index, method in enumerate(shipping_methods):
+    #     is_default = index == 0
+    #     params['L_SHIPPINGOPTIONISDEFAULT%d' % index] = 'true' if is_default else 'false'
+    #     charge = method.basket_charge_incl_tax()
+    #     if charge > max_charge:
+    #         max_charge = charge
+    #     if is_default:
+    #         params['PAYMENTREQUEST_0_SHIPPINGAMT'] = _format_currency(charge)
+    #         params['PAYMENTREQUEST_0_AMT'] += charge
+    #     params['L_SHIPPINGOPTIONNAME%d' % index] = unicode(method.name)
+    #     params['L_SHIPPINGOPTIONAMOUNT%d' % index] = _format_currency(charge)
 
     # Set shipping charge explicitly if it has been passed
     if shipping_method:
+        index += 1
         max_charge = charge = shipping_method.basket_charge_incl_tax()
-        params['PAYMENTREQUEST_0_SHIPPINGAMT'] = _format_currency(charge)
+        #params['PAYMENTREQUEST_0_SHIPPINGAMT'] = _format_currency(charge)
+        params['L_PAYMENTREQUEST_0_NAME%d' % index] = "Shipping"
+        params['L_PAYMENTREQUEST_0_NUMBER%d' % index] = ""
+        desc = ''
+        params['L_PAYMENTREQUEST_0_DESC%d' % index] = desc
+        # Note, we don't include discounts here - they are handled as separate
+        # lines - see below
+        params['L_PAYMENTREQUEST_0_AMT%d' % index] = _format_currency(
+            charge)
+        params['L_PAYMENTREQUEST_0_QTY%d' % index] = 1
+
         params['PAYMENTREQUEST_0_AMT'] += charge
 
     # Both the old version (MAXAMT) and the new version (PAYMENT...) are needed
@@ -453,6 +463,8 @@ def do_void(txn_id, note=None):
 
 FULL_REFUND = 'Full'
 PARTIAL_REFUND = 'Partial'
+
+
 def refund_txn(txn_id, is_partial=False, amount=None, currency=None):
     params = {
         'TRANSACTIONID': txn_id,

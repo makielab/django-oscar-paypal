@@ -180,7 +180,7 @@ class SuccessResponseView(PaymentDetailsView):
             return HttpResponseRedirect(reverse('basket:summary'))
 
         # Pass the user email so it can be stored with the order
-        order_kwargs = {'guest_email': self.txn.value('EMAIL')}
+        order_kwargs = {} # 'guest_email': self.txn.value('EMAIL')}
 
         # Lookup the frozen basket that this txn corresponds to
         try:
@@ -276,7 +276,7 @@ class SuccessResponseView(PaymentDetailsView):
         self.add_payment_source(source)
         self.add_payment_event('Settled', txn.amount)
 
-    def create_shipping_address(self, basket=None):
+    def _create_shipping_address(self, basket=None):
         """
         Return a created shipping address instance, created using
         the data returned by PayPal.
